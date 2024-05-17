@@ -1,0 +1,65 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract CryptoWalletInsurance {
+    address public owner;
+    uint256 public premiumAmount;
+    uint256 public insuranceLimit;
+    mapping(address => uint256) public premiumPaid;
+
+    constructor(uint256 _premiumAmount, uint256 _insuranceLimit) {
+        owner = msg.sender;
+        premiumAmount = _premiumAmount;
+        insuranceLimit = _insuranceLimit;
+    }
+
+    function payPremium() external payable {
+        require(msg.value == premiumAmount, "Incorrect premium amount");
+        premiumPaid[msg.sender] += msg.value;
+    }
+
+    function claimInsurance() external {
+        require(premiumPaid[msg.sender] >= premiumAmount, "Premium not paid");
+        // Perform checks for insurance claim
+        // If eligible, transfer insurance payout to the user
+        payable(msg.sender).transfer(insuranceLimit);
+    }
+}
+
+
+
+
+
+
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract CollateralProtection {
+    address public owner;
+    uint256 public premiumAmount;
+    uint256 public loanAmount;
+    uint256 public collateralValue;
+    uint256 public protectionThreshold;
+
+    constructor(uint256 _premiumAmount, uint256 _loanAmount, uint256 _collateralValue, uint256 _protectionThreshold) {
+        owner = msg.sender;
+        premiumAmount = _premiumAmount;
+        loanAmount = _loanAmount;
+        collateralValue = _collateralValue;
+        protectionThreshold = _protectionThreshold;
+    }
+
+    function payPremium() external payable {
+        require(msg.value == premiumAmount, "Incorrect premium amount");
+    }
+
+    function checkProtection() external {
+        require(msg.sender == owner, "Only owner can check protection");
+        if (collateralValue < protectionThreshold) {
+            // Transfer partial or full loan amount back to the lender
+            payable(msg.sender).transfer(loanAmount);
+        }
+    }
+}
