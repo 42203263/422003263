@@ -1,0 +1,49 @@
+import React, { useState } from 'react';
+import { ethers } from 'ethers';
+import OrganizationRegistryABI from './contracts/OrganizationRegistry.json';
+
+const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+const OrganizationRegistryAddress = '0x123...'; // Address of the deployed OrganizationRegistry contract
+
+const organizationRegistryContract = new ethers.Contract(
+  OrganizationRegistryAddress,
+  OrganizationRegistryABI.abi,
+  provider.getSigner()
+);
+
+const MyComponent = () => {
+  const [organizationName, setOrganizationName] = useState('');
+  const [stakeholderAddress, setStakeholderAddress] = useState('');
+  const [vestingPeriod, setVestingPeriod] = useState('');
+
+  const registerOrganization = async () => {
+    await organizationRegistryContract.registerOrganization(organizationName);
+    // Handle registration success
+  };
+
+  const addStakeholder = async () => {
+    await organizationRegistryContract.addStakeholder(stakeholderAddress, vestingPeriod);
+    // Handle stakeholder addition success
+  };
+
+  const withdrawTokens = async () => {
+    await organizationRegistryContract.withdrawTokens();
+    // Handle token withdrawal success
+  };
+
+  return (
+    <div>
+      <input type="text" placeholder="Organization Name" value={organizationName} onChange={(e) => setOrganizationName(e.target.value)} />
+      <button onClick={registerOrganization}>Register Organization</button>
+
+      <input type="text" placeholder="Stakeholder Address" value={stakeholderAddress} onChange={(e) => setStakeholderAddress(e.target.value)} />
+      <input type="text" placeholder="Vesting Period" value={vestingPeriod} onChange={(e) => setVestingPeriod(e.target.value)} />
+      <button onClick={addStakeholder}>Add Stakeholder</button>
+
+      <button onClick={withdrawTokens}>Withdraw Tokens</button>
+    </div>
+  );
+};
+
+export default MyComponent;
