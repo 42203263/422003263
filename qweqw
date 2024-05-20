@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract SmartContractWallet {
+    mapping(address => uint256) private _balances;
+    mapping(address => bool) private _wallets;
+
+    event WalletCreated(address indexed owner);
+    event FundsSent(address indexed from, address indexed to, uint256 amount);
+    event FundsReceived(address indexed to, uint256 amount);
+
+    function createWallet() external {
+        require(!_wallets[msg.sender], "Wallet already exists");
+        _wallets[msg.sender] = true;
+        emit WalletCreated(msg.sender);
+    }
+
+    function getBalance() external view returns (uint256) {
+        return _balances[msg.sender];
+    }
+
+    function sendFunds(address to, uint256 amount) external {
+        require(_wallets[to], "Recipient does not have a wallet");
+        require(_balances[msg.sender] >= amount, "Insufficient balance");
+        
+        _balances[msg.sender] -= amount;
+        _balances[to] += amount;
+        
+        emit FundsSent(msg.sender, to, amount);
+    }
+
+    function receiveFunds() external payable {
+        _balances[msg.sender] += msg.value;
+        emit FundsReceived(msg.sender, msg.value);
+    }
+}
