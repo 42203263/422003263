@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract NFTContract {
+    // Struct to hold NFT metadata
+    struct NFT {
+        string name;
+        string description;
+        string creator;
+    }
+    
+    NFT[] public nftCollection; // Array to hold NFT objects
+    
+    // Event to emit when an NFT is minted
+    event NFTMinted(string name, string description, string creator);
+    
+    // Function to mint an NFT and add it to the collection
+    function mintNFT(string memory name, string memory description, string memory creator) public {
+        NFT memory newNFT = NFT(name, description, creator);
+        nftCollection.push(newNFT);
+        emit NFTMinted(name, description, creator);
+    }
+    
+    // Function to get the total supply of NFTs
+    function getTotalSupply() public view returns (uint) {
+        return nftCollection.length;
+    }
+    
+    // Function to get the details of all minted NFTs
+    function listNFTs() public view returns (NFT[] memory) {
+        return nftCollection;
+    }
+}
